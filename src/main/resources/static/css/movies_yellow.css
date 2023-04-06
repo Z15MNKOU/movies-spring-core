@@ -1,0 +1,13 @@
+td {
+    border: 1px solid cyan;
+}
+
+body {
+    background-color: yellow;
+}
+
+.error {
+    color: red;
+    font-weight: bold;
+    border: 1px solid red;
+}

@@ -1,0 +1,79 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${NAMING_HOST:http://localhost:8761/eureka}
+logging:
+  level:
+    fr:
+      cenotelie:
+        training:
+          movies:
+            controllers: ERROR
+  pattern:
+    level: '%5p [${spring.application.name},%X{traceId:-},%X{spanId:-}]'
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  tracing:
+    sampling:
+      probability: 1.0
+movie:
+  message: Welcome to movie application
+  message-h2: Welcome to movie application
+resilience4j:
+  bulkhead:
+    instances:
+      wait3times2s:
+        maxConcurrentCalls: 10
+  ratelimiter:
+    instances:
+      wait3times2s:
+        limitForPeriod: 2
+        limitRefreshPeriod: 1s
+  retry:
+    instances:
+      wait3times2s:
+        maxAttempts: 5
+        waitDuration: 2s
+server:
+  port: 8081
+spring:
+  application:
+    name: movies
+  config:
+    import: optional:configserver:${CONFIG_HOST:http://localhost:8888}
+  datasource:
+    driverClassName: org.postgresql.Driver
+    password: training
+    url: jdbc:postgresql://localhost:5435/training
+    username: training
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+  rabbitmq:
+    host: localhost
+    password: training
+    port: 5672
+    username: training
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8181/realms/master
+            user-name-attribute: preferred_username
+        registration:
+          keycloak:
+            authorization-grant-type: authorization_code
+            client-id: movies
+            scope: openid
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8181/realms/master
